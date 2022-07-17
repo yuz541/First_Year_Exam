@@ -1,0 +1,42 @@
+---
+title: "Question 15"
+author: "Yuhan Zhang(A13829264)"
+date: "7/16/2022"
+output: pdf_document
+---
+
+```{r}
+library(ggplot2)
+library(lubridate)
+library(dplyr)
+```
+
+Read csv
+```{r}
+c19.variant = read.csv("covid19_variants.csv")
+```
+
+Represent date using lubridate
+```{r}
+c19.variant.date = ymd(c19.variant$date)
+c19.variant$date = c19.variant.date
+```
+
+Eliminate rows that are "Other" or "Total"
+```{r}
+c19.variant.greekOnly = c19.variant %>% 
+  filter(!variant_name %in% c("Total", "Other"))
+```
+
+Plot using ggplot2
+```{r}
+ggplot(c19.variant.greekOnly, aes(x = date, y = percentage, col = variant_name)) + 
+  geom_line() + 
+  scale_x_date(date_labels = "%b %Y", date_breaks = "1 month") + 
+  theme_bw() +
+  theme(axis.text.x=element_text(angle=60, hjust=1)) + 
+  ggtitle("Covid-19 Variants in California") + 
+  xlab("") +
+  ylab("Percentage of sequenced specimens") + 
+  labs(col = "", caption = "Data Source: <https://www.cdph.ca.gov/>")
+```
